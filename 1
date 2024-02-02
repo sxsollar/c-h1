@@ -4,71 +4,54 @@ class Program
 {
     static void Main()
     {
-        Console.WriteLine("Number of rows (N): ");
-        int n = int.Parse(Console.ReadLine());
+        int[,] chessboard = new int[8, 8];
 
-        Console.WriteLine("Number of columns (M): ");
-        int m = int.Parse(Console.ReadLine());
-
-        if (n <= 0 || m <= 0)
-        {
-            Console.WriteLine("Invalid matrix dimensions, rows and columns must be greater than 0.");
-            return;
-        }
-
-        int[,] matrix = GenerateRandomMatrix(n, m);
-
-        Console.WriteLine("Generated Matrix:");
-        DisplayMatrix(matrix);
-    }
-
-    static int[,] GenerateRandomMatrix(int rows, int columns)
-    {
-        int[,] matrix = new int[rows, columns];
+        
         Random random = new Random();
 
         
-        int totalNumbers = rows * columns;
-        int[] uniqueNumbers = new int[totalNumbers];
-        for (int i = 0; i < totalNumbers; i++)
-        {
-            uniqueNumbers[i] = i + 1;
-        }
+        int startX = random.Next(8);
+        int startY = random.Next(8);
+
+        Console.WriteLine($"Starting pos: {startY + 1}, {startX + 1}\n");
 
         
-        for (int i = totalNumbers - 1; i > 0; i--)
-        {
-            int j = random.Next(0, i + 1);
-            int temp = uniqueNumbers[i];
-            uniqueNumbers[i] = uniqueNumbers[j];
-            uniqueNumbers[j] = temp;
-        }
+        chessboard[startX, startY] = 1;
 
         
-        int index = 0;
-        for (int i = 0; i < rows; i++)
+        int[] moveX = { -2, -1, 1, 2, 2, 1, -1, -2 };
+        int[] moveY = { -1, -2, -2, -1, 1, 2, 2, 1 };
+
+        
+        for (int i = 0; i < 8; i++)
         {
-            for (int j = 0; j < columns; j++)
+            int nextX = startX + moveX[i];
+            int nextY = startY + moveY[i];
+
+            if (IsValidMove(nextX, nextY))
             {
-                matrix[i, j] = uniqueNumbers[index++];
+                chessboard[nextX, nextY] = 1;
             }
         }
 
-        return matrix;
+        
+        DisplayChessboard(chessboard);
     }
 
-    static void DisplayMatrix(int[,] matrix)
+    static void DisplayChessboard(int[,] chessboard)
     {
-        int rows = matrix.GetLength(0);
-        int columns = matrix.GetLength(1);
-
-        for (int i = 0; i < rows; i++)
+        for (int i = 0; i < 8; i++)
         {
-            for (int j = 0; j < columns; j++)
+            for (int j = 0; j < 8; j++)
             {
-                Console.Write($"{matrix[i, j],-4}");
+                Console.Write($"{chessboard[i, j],-3}");
             }
             Console.WriteLine();
         }
+    }
+
+    static bool IsValidMove(int x, int y)
+    {
+        return x >= 0 && x < 8 && y >= 0 && y < 8;
     }
 }
